@@ -51,8 +51,6 @@ class _HabitViewState extends State<HabitView> {
       );
     });
 
-    print(tiles);
-
     final divided = tiles.isNotEmpty
         ? ListTile.divideTiles(context: context, tiles: tiles).toList()
         : <Widget>[];

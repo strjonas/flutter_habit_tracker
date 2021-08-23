@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'InputPicker.dart';
+import 'dart:developer';
 
 final titleController = TextEditingController();
 final descriptionController = TextEditingController();
+
+var showSnackbar;
 
 var titleFiled = Container(
   width: 200,
@@ -49,11 +52,26 @@ class _SelectionButtonsState extends State<SelectionButtons> {
     var wek = exportWeekly;
     var tit = titleController.text;
     var des = descriptionController.text;
+    if (dur == null || wek == null || tit == "") {
+      showSnackbar('Please provide required data!');
+      return;
+    }
+
     widget.manageNewData(dur, wek, tit, des);
+    exportDuration = null;
+    exportDuration = null;
+    weeklyTimesText = "Weekly";
+    durationButtonText = "Pick Duration";
+    titleController.text = "";
+    descriptionController.text = "";
+    widget.onFloatingPressed();
   }
 
   @override
   Widget build(BuildContext context) {
+    showSnackbar = (text) => ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(text)));
+
     return Container(
         child: Padding(
             padding: EdgeInsets.all(20.0),
@@ -82,7 +100,6 @@ class _SelectionButtonsState extends State<SelectionButtons> {
                     style: style,
                     onPressed: () {
                       sendData();
-                      widget.onFloatingPressed();
                     },
                     child: const Text('Save'),
                   ),
@@ -124,7 +141,8 @@ class _AddScreenState extends State<AddScreen> {
                     Padding(padding: EdgeInsets.all(10.0), child: titleFiled),
                     Padding(
                         padding: EdgeInsets.all(10.0), child: descriptionFiled),
-                    InputPickers(),
+                    Padding(
+                        padding: EdgeInsets.all(0.0), child: InputPickers()),
                   ],
                 ),
               ),

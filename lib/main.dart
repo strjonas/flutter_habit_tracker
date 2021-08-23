@@ -7,7 +7,7 @@ import 'package:uuid/uuid.dart';
 
 import 'AddScreen.dart';
 
-final LocalStorage storage = new LocalStorage('habits.json');
+final LocalStorage storage = new LocalStorage('habits');
 var uuid = Uuid();
 
 var habits = [
@@ -29,8 +29,8 @@ var habits = [
   }
 ];
 
-void main() {
-  if (storage.getItem("habits") == null) {
+void main() async {
+  if (await storage.getItem("habits") == null) {
     storage.setItem("habits", habits);
   } else {
     habits = storage.getItem("habits");
@@ -51,14 +51,18 @@ var ImageTextStack = Stack(
       alignment: Alignment.center,
     ),
     Padding(
-        padding: EdgeInsets.all(42.0),
+      padding: EdgeInsets.only(top: 30),
+      child: Padding(
+        padding: EdgeInsets.all(12.0),
         child: Text(
-          "New Habit",
+          "NEW HABIT",
           style: TextStyle(
               color: Colors.grey[700],
               fontSize: 30,
               fontWeight: FontWeight.bold),
-        ))
+        ),
+      ),
+    )
   ],
 );
 
@@ -88,7 +92,6 @@ class MainAppState extends State<MainApp> {
   void onFloatingPressed() {
     setState(() {
       isAddScreen = !isAddScreen;
-      print(isAddScreen);
     });
   }
 
@@ -104,7 +107,7 @@ class MainAppState extends State<MainApp> {
     };
     habits.add(newData);
     storage.setItem("habis", habits);
-    print("$title, $description, $weekly, $duration");
+    //print("$title, $description, $weekly, $duration");
   }
 
   @override

@@ -94,54 +94,57 @@ class _DurationPicker extends StatefulWidget {
 class _DurationPickerState extends State<_DurationPicker> {
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (BuildContext context) => TextButton(
-        onPressed: () async {
-          var resultingDuration = await showDurationPicker(
-            context: context,
-            initialTime: Duration(minutes: 30),
-          );
-          if (resultingDuration == null) return;
-          _duration = resultingDuration;
-          var liste = resultingDuration.toString().split(":");
-          var hours = liste[0];
-          var minutes = liste[1];
+    return Padding(
+      padding: EdgeInsets.only(bottom: 0),
+      child: Builder(
+        builder: (BuildContext context) => TextButton(
+          onPressed: () async {
+            var resultingDuration = await showDurationPicker(
+              context: context,
+              initialTime: Duration(minutes: 30),
+            );
+            if (resultingDuration == null) return;
+            _duration = resultingDuration;
+            var liste = resultingDuration.toString().split(":");
+            var hours = liste[0];
+            var minutes = liste[1];
 
-          exportDuration = "$hours:$minutes";
+            exportDuration = "$hours:$minutes";
 
-          setState(() => durationButtonText = hours != "0"
-              ? "$hours hours and $minutes minutes"
-              : "$minutes minutes");
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //     SnackBar(content: Text('Chosen duration: $durationButtonText')));
-        },
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Container(
-                width: 243,
-                child: TextField(
-                  enabled: false,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                  ),
-                )),
-            Container(
-              width: 193,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    durationButtonText,
-                    style: TextStyle(
-                      color: Color(0xff495057),
+            setState(() => durationButtonText = hours != "0"
+                ? "$hours hours and $minutes minutes"
+                : "$minutes minutes");
+            // ScaffoldMessenger.of(context).showSnackBar(
+            //     SnackBar(content: Text('Chosen duration: $durationButtonText')));
+          },
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                  width: 243,
+                  child: TextField(
+                    enabled: false,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
                     ),
-                  ),
-                  Icon(Icons.arrow_drop_down)
-                ],
-              ),
-            )
-          ],
+                  )),
+              Container(
+                width: 193,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      durationButtonText,
+                      style: TextStyle(
+                        color: Color(0xff495057),
+                      ),
+                    ),
+                    Icon(Icons.arrow_drop_down)
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
