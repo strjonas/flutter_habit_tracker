@@ -1,11 +1,18 @@
+import 'dart:convert';
+
 import 'package:app/AddScreen.dart';
 import 'package:app/HabitView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:sembast/sembast.dart';
+import 'package:sembast/sembast_io.dart';
 import 'package:uuid/uuid.dart';
-
+import 'package:path_provider/path_provider.dart';
 import 'AddScreen.dart';
+import 'package:path/path.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 final LocalStorage storage = new LocalStorage('habits');
 var uuid = Uuid();
@@ -29,12 +36,33 @@ var habits = [
   }
 ];
 
+var DATABASE_PATH = "/data/user/0/com.example.app/app_flutter/habits.db";
+
 void main() async {
-  if (await storage.getItem("habits") == null) {
-    storage.setItem("habits", habits);
+  await Hive.initFlutter();
+
+  DatabaseFactory dbFactory = databaseFactoryIo;
+  Database db = await dbFactory.openDatabase(DATABASE_PATH);
+  var store = StoreRef.main();
+
+  if (await store.record('habits').get(db) == null) {
+    await store.record('habits').put(db, habits);
   } else {
-    habits = storage.getItem("habits");
+    var temp = await store.record('habits').get(db);
+    List<Map<String, String>> arr = [];
+    for (var i in temp) {
+      Map<String, String> dict = {};
+      for (var entry in i.entries) {
+        var e = entry.key;
+        var v = entry.value;
+        dict["$e"] = "$v";
+      }
+      arr.add(dict);
+    }
+    habits = arr;
   }
+
+  print(habits);
   runApp(MyApp());
 }
 
@@ -95,7 +123,7 @@ class MainAppState extends State<MainApp> {
     });
   }
 
-  void manageNewData(duration, weekly, title, description) {
+  void manageNewData(duration, weekly, title, description) async {
     final id = uuid.v4();
     var newData = {
       "id": "$id",
@@ -106,7 +134,10 @@ class MainAppState extends State<MainApp> {
       "thisweek": "$weekly"
     };
     habits.add(newData);
-    storage.setItem("habis", habits);
+    DatabaseFactory dbFactory = databaseFactoryIo;
+    Database db = await dbFactory.openDatabase(DATABASE_PATH);
+    var store = StoreRef.main();
+    await store.record('habits').put(db, habits);
     //print("$title, $description, $weekly, $duration");
   }
 

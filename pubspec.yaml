@@ -16,6 +16,10 @@ dependencies:
   flutter_material_pickers: ^3.1.0
   localstorage: ^4.0.0+1
   uuid: ^3.0.4
+  sembast: ^3.1.0+2
+  path_provider: ^2.0.2
+  hive:
+  hive_flutter:
 
 dev_dependencies:
   flutter_test:
